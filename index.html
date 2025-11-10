@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curiosità PWA</title>
+<style>
+  body { background: #101820; color: #fff; font-family: sans-serif; padding: 20px; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; text-align:center; }
+  h1 { color:#FEE715; margin-bottom:20px; }
+  p { font-size:18px; margin-bottom:30px; }
+  button { font-size:20px; padding:10px 20px; cursor:pointer; background:#FEE715; border:none; border-radius:10px; }
+</style>
+
+<!-- Manifest inline per PWABuilder -->
+<script type="application/manifest+json">
+{
+  "name": "Curiosità PWA",
+  "short_name": "Curiosità",
+  "description": "Un'app che mostra curiosità casuali da Wikipedia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#101820",
+  "theme_color": "#FEE715",
+  "icons": [
+    { "src": "https://via.placeholder.com/192.png", "sizes":"192x192", "type":"image/png" },
+    { "src": "https://via.placeholder.com/512.png", "sizes":"512x512", "type":"image/png" }
+  ]
+}
+</script>
+
+</head>
+<body>
+<h1>Curiosità!</h1>
+<p id="curiosita">Caricamento...</p>
+<button onclick="caricaCuriosita()">🎲 Nuova Curiosità</button>
+
+<script>
+async function caricaCuriosita(){
+  const fallback = [
+    "Il miele non va mai a male.",
+    "Gli squali esistono da più di 400 milioni di anni.",
+    "Le giraffe hanno la lingua lunga circa 45 cm.",
+    "Il polpo ha tre cuori.",
+    "La luna si allontana dalla Terra di circa 3,8 cm all'anno."
+  ];
+  try {
+    const res = await fetch('https://it.wikipedia.org/api/rest_v1/page/random/summary');
+    const data = await res.json();
+    document.getElementById('curiosita').innerText = data.extract || fallback[Math.floor(Math.random()*fallback.length)];
+  } catch(e){
+    document.getElementById('curiosita').innerText = fallback[Math.floor(Math.random()*fallback.length)];
+  }
+}
+
+// Carica subito una curiosità
+caricaCuriosita();
+</script>
+</body>
+</html>
